@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Platforma</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --card2: #232640;
+    --accent: #6c63ff;
+    --accent2: #43e97b;
+    --accent3: #f7971e;
+    --danger: #ff6584;
+    --text: #eaf0fb;
+    --muted: #8892b0;
+    --border: #2e3254;
+    --radius: 18px;
+    --shadow: 0 8px 40px rgba(108,99,255,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 30%, rgba(108,99,255,0.13) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 70%, rgba(67,233,123,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 36px 32px;
+  }
+
+  /* Logo / Header */
+  .logo-area {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .logo-icon {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 20px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 24px rgba(108,99,255,0.35);
+  }
+  .logo-area h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-area p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  /* Form inputs */
+  .form-group {
+    margin-bottom: 18px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 7px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  input, select {
+    width: 100%;
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input::placeholder { color: var(--muted); }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.18);
+  }
+  select option { background: var(--card2); }
+
+  /* Row grid */
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #a084ff);
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(108,99,255,0.35);
+    margin-top: 8px;
+  }
+  .btn-primary:hover { box-shadow: 0 6px 28px rgba(108,99,255,0.5); transform: translateY(-1px); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--accent2), #38f9d7);
+    color: #0f1117;
+    box-shadow: 0 4px 18px rgba(67,233,123,0.25);
+  }
+  .btn-success:hover { box-shadow: 0 6px 28px rgba(67,233,123,0.4); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--border);
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── TEST SCREEN ─── */
+  .test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .test-info {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .timer-box {
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 7px 16px;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--accent2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 1px;
+  }
+  .timer-box.danger { color: var(--danger); border-color: var(--danger); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.6; } }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-bottom: 22px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    background: var(--card2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  /* Question */
+  .question-num {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .question-text {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.55;
+    margin-bottom: 22px;
+    color: var(--text);
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 11px; }
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card2);
+    border: 2px solid var(--border);
+    border-radius: 13px;
+    padding: 13px 16px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    transition: border-color 0.18s, background 0.18s, transform 0.12s;
+    text-align: left;
+    width: 100%;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.1);
+    transform: translateX(3px);
+  }
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.18);
+  }
+  .option-badge {
+    min-width: 32px; height: 32px;
+    background: var(--bg);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--muted);
+    transition: background 0.18s, color 0.18s;
+  }
+  .option-btn.selected .option-badge {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .next-row {
+    margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .btn-next {
+    padding: 12px 32px;
+    width: auto;
+    background: linear-gradient(135deg, var(--accent), #a084ff);
+    color: #fff;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s, opacity 0.15s;
+    box-shadow: 0 3px 14px rgba(108,99,255,0.3);
+  }
+  .btn-next:disabled { opacity: 0.38; cursor: not-allowed; }
+  .btn-next:not(:disabled):hover { box-shadow: 0 5px 22px rgba(108,99,255,0.45); transform: translateY(-1px); }
+
+  /* ─── RESULT SCREEN ─── */
+  .result-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .result-emoji {
+    font-size: 60px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .result-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .result-header p { color: var(--muted); font-size: 14px; }
+
+  .result-score-ring {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent2) 0%, var(--accent) 100%);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    position: relative;
+    box-shadow: 0 0 0 8px rgba(108,99,255,0.12);
+  }
+  .result-score-inner {
+    width: 108px; height: 108px;
+    background: var(--card);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  .result-score-inner .pct {
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1;
+  }
+  .result-score-inner .pct-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .result-details {
+    background: var(--card2);
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .lbl { color: var(--muted); font-weight: 700; }
+  .detail-row .val { font-weight: 800; color: var(--text); }
+  .val.good { color: var(--accent2); }
+  .val.mid  { color: var(--accent3); }
+  .val.bad  { color: var(--danger); }
+
+  .author-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 14px;
+    background: var(--card2);
+    border-radius: 12px;
+    border: 1.5px dashed var(--border);
+    margin-top: 18px;
+  }
+  .author-note span {
+    font-weight: 900;
+    color: var(--accent);
+  }
+
+  /* Telegram status */
+  .tg-status {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13px;
+    min-height: 22px;
+    color: var(--muted);
+  }
+  .tg-status.ok  { color: var(--accent2); }
+  .tg-status.err { color: var(--danger); }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .card { padding: 26px 18px; }
+    .row-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ START SCREEN ═══════════════ -->
+<div class="screen active" id="screen-start">
+  <div class="card">
+    <div class="logo-area">
+      <div class="logo-icon">📚</div>
+      <h1>Test Platforma</h1>
+      <p>Bilimingizni sinab ko'ring!</p>
+    </div>
+
+    <div class="row-2">
+      <div class="form-group">
+        <label>Ism</label>
+        <input type="text" id="inp-ism" placeholder="Isming...">
+      </div>
+      <div class="form-group">
+        <label>Familiya</label>
+        <input type="text" id="inp-familiya" placeholder="Familiyangiz...">
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div class="form-group">
+        <label>Sinf</label>
+        <select id="sel-sinf">
+          <option value="">— Tanlang —</option>
+          <option value="6">6-sinf</option>
+          <option value="7">7-sinf</option>
+          <option value="8">8-sinf</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fan</label>
+        <select id="sel-fan">
+          <option value="">— Tanlang —</option>
+          <option value="Ona tili">Ona tili</option>
+          <option value="Matematika">Matematika</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="boshlaTest()">🚀 Testni boshlash</button>
+  </div>
+</div>
+
+<!-- ═══════════════ TEST SCREEN ═══════════════ -->
+<div class="screen" id="screen-test">
+  <div class="card">
+    <div class="test-header">
+      <div class="test-info" id="test-label">Fan | Sinf</div>
+      <div class="timer-box" id="timer-box">⏱ <span id="timer-display">10:00</span></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span id="prog-text">Savol 1 / 15</span>
+        <span id="prog-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-num" id="q-num">SAVOL 1</div>
+    <div class="question-text" id="q-text">Savol matni...</div>
+
+    <div class="options" id="options-container"></div>
+
+    <div class="next-row">
+      <button class="btn-next" id="btn-next" onclick="keyingi()" disabled>Keyingisi →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ RESULT SCREEN ═══════════════ -->
+<div class="screen" id="screen-result">
+  <div class="card">
+    <div class="result-header">
+      <span class="result-emoji" id="res-emoji">🏆</span>
+      <h2 id="res-title">Tabriklaymiz!</h2>
+      <p id="res-subtitle">Test yakunlandi</p>
+    </div>
+
+    <div class="result-score-ring" id="score-ring">
+      <div class="result-score-inner">
+        <div class="pct" id="res-pct">0%</div>
+        <div class="pct-label">ball</div>
+      </div>
+    </div>
+
+    <div class="result-details">
+      <div class="detail-row"><span class="lbl">👤 Ism Familiya</span><span class="val" id="r-ism">—</span></div>
+      <div class="detail-row"><span class="lbl">🏫 Sinf</span><span class="val" id="r-sinf">—</span></div>
+      <div class="detail-row"><span class="lbl">📖 Fan</span><span class="val" id="r-fan">—</span></div>
+      <div class="detail-row"><span class="lbl">✅ To'g'ri javoblar</span><span class="val" id="r-togri">—</span></div>
+      <div class="detail-row"><span class="lbl">❌ Noto'g'ri javoblar</span><span class="val" id="r-notogri">—</span></div>
+      <div class="detail-row"><span class="lbl">📊 Foiz</span><span class="val" id="r-foiz">—</span></div>
+    </div>
+
+    <button class="btn btn-success" onclick="qaytaIshlash()">🔄 Qayta ishlash</button>
+
+    <div class="author-note">
+      Test va ilova yaratuvchisi: <span>Mirabror Safarov</span>
+    </div>
+
+    <div class="tg-status" id="tg-status"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//   TELEGRAM CONFIG — BU YERGA KIRITING
+// ══════════════════════════════════════════
+const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';   // Telegram bot tokeningiz
+const CHAT_ID   = 'YOUR_CHAT_ID_HERE';     // Telegram chat ID
+
+// ══════════════════════════════════════════
+//   SAVOLLAR BANKI
+// ══════════════════════════════════════════
+const QUESTIONS = {
+  'Ona tili': [
+    { s: "O'zbek tilida nechta unli tovush mavjud?", v: ['6', '5', '7', '8'], t: 0 },
+    { s: "Qaysi so'z ot turkumiga kiradi?", v: ['Yugurmoq', 'Baland', 'Kitob', 'Tez'], t: 2 },
+    { s: "Quyidagi qaysi so'z sifat?", v: ['Chiroyli', 'Yurmoq', 'Daftar', 'Ular'], t: 0 },
+    { s: "«Kitob» so'zidagi bo'g'inlar soni?", v: ['1', '2', '3', '4'], t: 1 },
+    { s: "Fe'lning qaysi shakli buyruq maylidir?", v: ["Yur-di", "Yur-sa", "Yur!", "Yur-moq"], t: 2 },
+    { s: "'Uy' so'ziga qo'shilgan '-lar' qo'shimchasi nima?", v: ['Egalik', 'Ko\'plik', 'Kelishik', 'Fe\'l'], t: 1 },
+    { s: "Quyidagi jumlada ega qaysi so'z? «Bola daftarni oldi»", v: ['Daftarni', 'Oldi', 'Bola', 'Ni'], t: 2 },
+    { s: "Sinonim so'zlar qaysi qatorda berilgan?", v: ['Baland — past', 'Katta — ulkan', 'Issiq — sovuq', 'Oq — qora'], t: 1 },
+    { s: "«Maktab» so'zi qaysi tildan o'zlashgan?", v: ['Fors', 'Rus', 'Arab', 'Ingliz'], t: 2 },
+    { s: "Quyidagi qaysi gapda to'ldiruvchi bor? ", v: ['Qush uchadi', 'Ona non yedi', 'Gul chiroyli', 'Bola o\'ynaydi'], t: 1 },
+    { s: "Olmosh nima?", v: ['Predmetni bildiradi', 'Harakat bildiradi', 'Ot, sifat, sonlarning o\'rnida qo\'llanadi', 'Belgi bildiradi'], t: 2 },
+    { s: "'Uch' so'zi qaysi turkumga kiradi?", v: ['Ot', 'Son', 'Fe\'l', 'Ravish'], t: 1 },
+    { s: "Ergashgan qo'shma gapda necha qism bo'ladi?", v: ['1', '2', '3', '4'], t: 1 },
+    { s: "«Bahor keldi» jumlasida kesim qaysi so'z?", v: ['Bahor', 'Keldi', 'Bahor keldi', 'Hech biri'], t: 1 },
+    { s: "Antonimlar qaysi qatorda to'g'ri berilgan?", v: ['Katta — ulkan', 'Issiq — sovuq', 'Go\'zal — chiroyli', 'Tez — shoshqin'], t: 1 },
+    { s: "Qo'shma so'zga misol?", v: ['Kitob', 'Temir yo\'l', 'Yurdi', 'Baland'], t: 1 },
+    { s: "Atoqli ot qaysi?", v: ['Daryo', 'Amudaryo', 'Shahar', 'Tog\''], t: 1 },
+    { s: "'Sekin-sekin' qaysi so'z turkumi?", v: ['Sifat', 'Ot', 'Ravish', 'Fe\'l'], t: 2 },
+    { s: "Aniqlovchi jumlaning qaysi bo'lagi?", v: ['Bosh bo\'lak', 'Ikkinchi darajali bo\'lak', 'Kesim', 'Ega'], t: 1 },
+    { s: "O'zbek alifbosida nechta harf bor?", v: ['26', '29', '32', '35'], t: 1 },
+  ],
+  'Matematika': [
+    { s: "15 × 4 = ?", v: ['55', '60', '50', '65'], t: 1 },
+    { s: "144 ning kvadrat ildizi nechaga teng?", v: ['11', '12', '13', '14'], t: 1 },
+    { s: "Uchburchak ichki burchaklari yig'indisi necha gradus?", v: ['90°', '270°', '180°', '360°'], t: 2 },
+    { s: "2³ = ?", v: ['6', '8', '4', '9'], t: 1 },
+    { s: "Doira yuzasini hisoblash formulasi?", v: ['2πr', 'πr²', 'πd', '2πr²'], t: 1 },
+    { s: "72 ÷ 8 = ?", v: ['8', '9', '7', '6'], t: 1 },
+    { s: "Toʻgʻri burchak necha gradus?", v: ['45°', '60°', '90°', '180°'], t: 2 },
+    { s: "5! (faktorial) = ?", v: ['60', '100', '120', '20'], t: 2 },
+    { s: "0.5 ni kasr shaklida yozing:", v: ['1/4', '1/5', '1/2', '2/5'], t: 2 },
+    { s: "Kvadratning perimetri formulasi? (a — tomoni)", v: ['a²', '4a', '2a', 'a+4'], t: 1 },
+    { s: "(-3) × (-4) = ?", v: ['-12', '12', '7', '-7'], t: 1 },
+    { s: "200 ning 15% i qancha?", v: ['25', '30', '15', '20'], t: 1 },
+    { s: "To'g'ri to'rtburchakning yuzi (a=6, b=4)?", v: ['20', '24', '10', '28'], t: 1 },
+    { s: "x + 5 = 12 bo'lsa, x = ?", v: ['5', '7', '17', '6'], t: 1 },
+    { s: "Ikkita son 3 va 7. Ularning EKUK (LCM) si?", v: ['10', '21', '14', '7'], t: 1 },
+    { s: "3/4 + 1/4 = ?", v: ['4/8', '1', '2/4', '3/8'], t: 1 },
+    { s: "Piramidaning asosi necha burchakli bo'lishi mumkin?", v: ['Faqat 4', 'Faqat 3', 'Har qanday', 'Faqat 5'], t: 2 },
+    { s: "2x = 14 bo'lsa, x = ?", v: ['6', '7', '8', '12'], t: 1 },
+    { s: "Sonlar qatorida keyingi raqam: 2, 4, 8, 16, ...?", v: ['18', '24', '32', '30'], t: 2 },
+    { s: "Agar a = 3, b = 4 bo'lsa, √(a²+b²) = ?", v: ['5', '7', '6', '4'], t: 0 },
+  ]
+};
+
+// ══════════════════════════════════════════
+//   STATE
+// ══════════════════════════════════════════
+let state = {
+  ism: '', familiya: '', sinf: '', fan: '',
+  savollar: [], joriy: 0, javoblar: [],
+  tanlangan: null, timer: null, qolganVaqt: 600
+};
+
+// ══════════════════════════════════════════
+//   START
+// ══════════════════════════════════════════
+function boshlaTest() {
+  const ism      = document.getElementById('inp-ism').value.trim();
+  const familiya = document.getElementById('inp-familiya').value.trim();
+  const sinf     = document.getElementById('sel-sinf').value;
+  const fan      = document.getElementById('sel-fan').value;
+
+  if (!ism || !familiya || !sinf || !fan) {
+    alert('Iltimos, barcha maydonlarni to\'ldiring!');
+    return;
+  }
+
+  state.ism = ism; state.familiya = familiya;
+  state.sinf = sinf + '-sinf'; state.fan = fan;
+  state.joriy = 0; state.javoblar = []; state.tanlangan = null;
+  state.qolganVaqt = 600;
+
+  // Savollarni aralashtirish (20 ta olish)
+  const pool = [...QUESTIONS[fan]].sort(() => Math.random() - 0.5).slice(0, 20);
+  state.savollar = pool;
+
+  document.getElementById('test-label').textContent = `${fan} | ${sinf}-sinf`;
+  korsatSavol();
+  timerBoshlash();
+  showScreen('screen-test');
+}
+
+function timerBoshlash() {
+  clearInterval(state.timer);
+  state.timer = setInterval(() => {
+    state.qolganVaqt--;
+    const m = String(Math.floor(state.qolganVaqt / 60)).padStart(2,'0');
+    const s = String(state.qolganVaqt % 60).padStart(2,'0');
+    document.getElementById('timer-display').textContent = `${m}:${s}`;
+    const box = document.getElementById('timer-box');
+    if (state.qolganVaqt <= 60) box.classList.add('danger');
+    if (state.qolganVaqt <= 0) { clearInterval(state.timer); tugatTest(); }
+  }, 1000);
+}
+
+// ══════════════════════════════════════════
+//   SHOW QUESTION
+// ══════════════════════════════════════════
+function korsatSavol() {
+  const total = state.savollar.length;
+  const idx   = state.joriy;
+  const q     = state.savollar[idx];
+  const pct   = Math.round((idx / total) * 100);
+
+  document.getElementById('q-num').textContent = `SAVOL ${idx + 1}`;
+  document.getElementById('q-text').textContent = q.s;
+  document.getElementById('prog-text').textContent = `Savol ${idx + 1} / ${total}`;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const labels = ['A', 'B', 'C', 'D'];
+  const cont   = document.getElementById('options-container');
+  cont.innerHTML = '';
+  state.tanlangan = null;
+  document.getElementById('btn-next').disabled = true;
+
+  q.v.forEach((text, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-badge">${labels[i]}</span><span>${text}</span>`;
+    btn.onclick = () => tanla(i, btn);
+    cont.appendChild(btn);
+  });
+}
+
+function tanla(idx, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.tanlangan = idx;
+  document.getElementById('btn-next').disabled = false;
+}
+
+function keyingi() {
+  if (state.tanlangan === null) return;
+  state.javoblar.push(state.tanlangan);
+  state.joriy++;
+
+  if (state.joriy >= state.savollar.length) {
+    clearInterval(state.timer);
+    tugatTest();
+  } else {
+    korsatSavol();
+  }
+}
+
+// ══════════════════════════════════════════
+//   FINISH
+// ══════════════════════════════════════════
+function tugatTest() {
+  // Vaqt tugab javob berilmagan savollar notogri hisoblanadi
+  const total = state.savollar.length;
+  if (total === 0) return;
+  let togri = 0;
+  state.javoblar.forEach((j, i) => {
+    if (j === state.savollar[i].t) togri++;
+  });
+  const foiz = Math.round((togri / total) * 100);
+
+  // Ring gradient
+  const fill = `conic-gradient(var(--accent2) ${foiz * 3.6}deg, var(--card2) ${foiz * 3.6}deg)`;
+  document.getElementById('score-ring').style.background = fill;
+
+  document.getElementById('res-pct').textContent = foiz + '%';
+  document.getElementById('r-ism').textContent   = `${state.ism} ${state.familiya}`;
+  document.getElementById('r-sinf').textContent  = state.sinf;
+  document.getElementById('r-fan').textContent   = state.fan;
+
+  const toTriEl = document.getElementById('r-togri');
+  const notEl   = document.getElementById('r-notogri');
+  const foizEl  = document.getElementById('r-foiz');
+
+  toTriEl.textContent = `${togri} / ${total}`;
+  notEl.textContent   = `${total - togri} / ${total}`;
+  foizEl.textContent  = foiz + '%';
+
+  // Color coding
+  toTriEl.className = 'val good';
+  notEl.className   = 'val bad';
+  foizEl.className  = foiz >= 80 ? 'val good' : foiz >= 50 ? 'val mid' : 'val bad';
+
+  // Emoji & title
+  let emoji = '🏆', title = 'A\'lo natija!', sub = 'Zo\'r! Davom eting!';
+  if (foiz < 50) { emoji = '📚'; title = 'Ko\'proq o\'qing!'; sub = 'Sabr qiling, keyingisida yaxshiroq bo\'ladi'; }
+  else if (foiz < 75) { emoji = '👍'; title = 'Yaxshi natija!'; sub = 'Bilimingiz yaxshilanmoqda!'; }
+  document.getElementById('res-emoji').textContent   = emoji;
+  document.getElementById('res-title').textContent   = title;
+  document.getElementById('res-subtitle').textContent = sub;
+
+  showScreen('screen-result');
+  telegramYuborish(togri, total, foiz);
+}
+
+// ══════════════════════════════════════════
+//   TELEGRAM
+// ══════════════════════════════════════════
+async function telegramYuborish(togri, total, foiz) {
+  const el = document.getElementById('tg-status');
+  const matn = `📊 *Test Natijasi*\n\n` +
+    `👤 Ism Familiya: *${state.ism} ${state.familiya}*\n` +
+    `🏫 Sinf: *${state.sinf}*\n` +
+    `📖 Fan: *${state.fan}*\n` +
+    `✅ To'g'ri javoblar: *${togri} / ${total}*\n` +
+    `📊 Foiz: *${foiz}%*\n\n` +
+    `_Test muallifi: Mirabror Safarov_`;
+
+  try {
+    const BOT_TOKEN = '8358238543:AAEYAJ0fVlyR3vdUW_f3dXEM13plSSett9M';
+    const CHAT_ID   = '7155319243';
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: CHAT_ID, text: matn, parse_mode: 'Markdown' })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      el.textContent = 'Test tugatildi';
+      el.className = 'tg-status ok';
+    } else {
+      el.textContent = 'Test tugatildi';
+      el.className = 'tg-status err';
+    }
+  } catch (e) {
+    el.textContent = 'Test tugatildi';
+    el.className = 'tg-status err';
+  }
+}
+
+// ══════════════════════════════════════════
+//   HELPERS
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function qaytaIshlash() {
+  clearInterval(state.timer);
+  document.getElementById('inp-ism').value = '';
+  document.getElementById('inp-familiya').value = '';
+  document.getElementById('sel-sinf').value = '';
+  document.getElementById('sel-fan').value = '';
+  document.getElementById('timer-box').classList.remove('danger');
+  document.getElementById('tg-status').textContent = '';
+  document.getElementById('tg-status').className = 'tg-status';
+  showScreen('screen-start');
+}
+</script>
+</body>
+</html>
